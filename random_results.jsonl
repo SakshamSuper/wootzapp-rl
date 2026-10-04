@@ -1,0 +1,1 @@
+{"agent": "random", "steps": 10, "actions": ["wait", "click:1", "click:0", "wait", "wait", "click:0", "click:1", "click:1", "wait", "click:2"], "elapsed_seconds": 10.0145}

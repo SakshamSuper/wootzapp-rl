@@ -785,9 +785,6 @@ int main() {
 
     MiniShopEnvironment env;
 
-
-    // Start the environment.
-
     if (!env.reset()) {
 
         std::cout
@@ -796,13 +793,26 @@ int main() {
         return 1;
     }
 
+    std::cout
+        << "\nEnvironment ready.\n";
 
-    // Test a real click.
+    std::cout
+        << "Waiting for actions from Python...\n";
 
-    env.step(
-        "click:0"
-    );
+    std::string action;
 
+    while (std::getline(std::cin, action)) {
+
+        if (action == "quit") {
+            break;
+        }
+
+        if (action.empty()) {
+            continue;
+        }
+
+        env.step(action);
+    }
 
     return 0;
 }
