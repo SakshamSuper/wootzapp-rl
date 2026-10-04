@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MiniShop</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        header {
+            background: #222;
+            color: white;
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        button {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #2563eb;
+            color: white;
+            font-size: 14px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .product {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .product h3 {
+            margin-top: 0;
+        }
+
+        .price {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .quantity button {
+            padding: 8px 12px;
+        }
+
+        .quantity span {
+            font-size: 18px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .popup {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            width: 280px;
+            z-index: 1000;
+        }
+
+        .popup button {
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .success {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>MiniShop</h1>
+
+    <button id="cartButton" onclick="showCart()">
+        Cart
+    </button>
+</header>
+
+<div class="container">
+
+    <!-- =========================
+         CATALOG SCREEN
+    ========================== -->
+    <section id="catalogScreen">
+
+        <h2>Product Catalog</h2>
+
+        <div class="products">
+
+            <div class="product">
+                <h3>Blue Mug</h3>
+                <p>A simple blue ceramic mug.</p>
+                <p class="price">₹299</p>
+
+                <button onclick="viewProduct('blue-mug')">
+                    View Product
+                </button>
+            </div>
+
+            <div class="product">
+                <h3>Red T-Shirt</h3>
+                <p>Comfortable cotton t-shirt.</p>
+                <p class="price">₹799</p>
+
+                <button onclick="viewProduct('red-tshirt')">
+                    View Product
+                </button>
+            </div>
+
+            <div class="product">
+                <h3>Notebook</h3>
+                <p>Hardcover ruled notebook.</p>
+                <p class="price">₹199</p>
+
+                <button onclick="viewProduct('notebook')">
+                    View Product
+                </button>
+            </div>
+
+            <div class="product">
+                <h3>Water Bottle</h3>
+                <p>Reusable stainless steel bottle.</p>
+                <p class="price">₹599</p>
+
+                <button onclick="viewProduct('water-bottle')">
+                    View Product
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         PRODUCT SCREEN
+    ========================== -->
+    <section id="productScreen" class="hidden">
+
+        <button onclick="showCatalog()">
+            ← Back to Catalog
+        </button>
+
+        <h2 id="productName"></h2>
+
+        <p id="productDescription"></p>
+
+        <p class="price" id="productPrice"></p>
+
+        <div class="quantity">
+
+            <button onclick="decreaseQuantity()">
+                -
+            </button>
+
+            <span id="quantity">
+                1
+            </span>
+
+            <button onclick="increaseQuantity()">
+                +
+            </button>
+
+        </div>
+
+        <button onclick="addToCart()">
+            Add to Cart
+        </button>
+
+    </section>
+
+
+    <!-- =========================
+         CART SCREEN
+    ========================== -->
+    <section id="cartScreen" class="hidden">
+
+        <button onclick="showCatalog()">
+            ← Continue Shopping
+        </button>
+
+        <h2>Your Cart</h2>
+
+        <div id="cartContent"></div>
+
+        <button id="checkoutButton" onclick="checkout()">
+            Checkout
+        </button>
+
+    </section>
+
+
+    <!-- =========================
+         DONE SCREEN
+    ========================== -->
+    <section id="doneScreen" class="hidden">
+
+        <div class="success">
+
+            <h2>Order Complete!</h2>
+
+            <p id="orderMessage"></p>
+
+            <button onclick="showCatalog()">
+                Back to Catalog
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         NEWSLETTER SCREEN
+    ========================== -->
+    <section id="newsletterScreen" class="hidden">
+
+        <h2>Subscribe to our Newsletter</h2>
+
+        <input
+            id="emailInput"
+            type="email"
+            placeholder="Enter your email"
+        >
+
+        <button onclick="subscribeNewsletter()">
+            Subscribe
+        </button>
+
+        <p id="newsletterMessage"></p>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     RANDOM POPUP
+========================== -->
+
+<div id="popup" class="popup hidden">
+
+    <strong>Special Offer!</strong>
+
+    <p>
+        Get 10% off your next order.
+    </p>
+
+    <button onclick="closePopup()">
+        Close
+    </button>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   PRODUCT DATA
+===================================================== */
+
+const products = {
+
+    "blue-mug": {
+        name: "Blue Mug",
+        description: "A simple blue ceramic mug.",
+        price: 299
+    },
+
+    "red-tshirt": {
+        name: "Red T-Shirt",
+        description: "Comfortable cotton t-shirt.",
+        price: 799
+    },
+
+    "notebook": {
+        name: "Notebook",
+        description: "Hardcover ruled notebook.",
+        price: 199
+    },
+
+    "water-bottle": {
+        name: "Water Bottle",
+        description: "Reusable stainless steel bottle.",
+        price: 599
+    }
+
+};
+
+
+/* =====================================================
+   APPLICATION STATE
+===================================================== */
+
+let selectedProduct = null;
+
+let quantity = 1;
+
+let cart = [];
+
+
+/* =====================================================
+   SCREEN MANAGEMENT
+===================================================== */
+
+/*
+    Hide every screen.
+*/
+function hideAllScreens() {
+
+    document.getElementById("catalogScreen")
+        .classList.add("hidden");
+
+    document.getElementById("productScreen")
+        .classList.add("hidden");
+
+    document.getElementById("cartScreen")
+        .classList.add("hidden");
+
+    document.getElementById("doneScreen")
+        .classList.add("hidden");
+
+    document.getElementById("newsletterScreen")
+        .classList.add("hidden");
+}
+
+
+/*
+    Show catalog.
+*/
+function showCatalog() {
+
+    hideAllScreens();
+
+    document.getElementById("catalogScreen")
+        .classList.remove("hidden");
+}
+
+
+/*
+    Show product page.
+*/
+function viewProduct(productId) {
+
+    selectedProduct = productId;
+
+    quantity = 1;
+
+    showProduct();
+
+}
+
+
+/*
+    Display selected product.
+*/
+function showProduct() {
+
+    hideAllScreens();
+
+    const product = products[selectedProduct];
+
+    document.getElementById("productName")
+        .textContent = product.name;
+
+    document.getElementById("productDescription")
+        .textContent = product.description;
+
+    document.getElementById("productPrice")
+        .textContent = "₹" + product.price;
+
+    updateQuantity();
+
+    document.getElementById("productScreen")
+        .classList.remove("hidden");
+}
+
+
+/* =====================================================
+   QUANTITY
+===================================================== */
+
+function increaseQuantity() {
+
+    quantity++;
+
+    updateQuantity();
+}
+
+
+function decreaseQuantity() {
+
+    if (quantity > 1) {
+
+        quantity--;
+
+    }
+
+    updateQuantity();
+}
+
+
+function updateQuantity() {
+
+    document.getElementById("quantity")
+        .textContent = quantity;
+}
+
+
+/* =====================================================
+   CART
+===================================================== */
+
+function addToCart() {
+
+    const product = products[selectedProduct];
+
+    cart.push({
+
+        id: selectedProduct,
+
+        name: product.name,
+
+        price: product.price,
+
+        quantity: quantity
+
+    });
+
+    alert("Product added to cart!");
+
+    showCart();
+}
+
+
+function showCart() {
+
+    hideAllScreens();
+
+    const cartContent =
+        document.getElementById("cartContent");
+
+    if (cart.length === 0) {
+
+        cartContent.innerHTML =
+            "<p>Your cart is empty.</p>";
+
+        document.getElementById("checkoutButton")
+            .classList.add("hidden");
+
+    } else {
+
+        let html = "";
+
+        cart.forEach(function(item) {
+
+            html += `
+                <div class="product">
+
+                    <h3>${item.name}</h3>
+
+                    <p>
+                        Quantity: ${item.quantity}
+                    </p>
+
+                    <p>
+                        Price:
+                        ₹${item.price * item.quantity}
+                    </p>
+
+                </div>
+            `;
+
+        });
+
+        cartContent.innerHTML = html;
+
+        document.getElementById("checkoutButton")
+            .classList.remove("hidden");
+    }
+
+    document.getElementById("cartScreen")
+        .classList.remove("hidden");
+}
+
+
+/* =====================================================
+   CHECKOUT
+===================================================== */
+
+function checkout() {
+
+    if (cart.length === 0) {
+
+        return;
+
+    }
+
+    const total = cart.reduce(
+
+        function(sum, item) {
+
+            return sum +
+                (item.price * item.quantity);
+
+        },
+
+        0
+    );
+
+    document.getElementById("orderMessage")
+        .textContent =
+        "Your order of ₹" + total +
+        " has been placed successfully.";
+
+    hideAllScreens();
+
+    document.getElementById("doneScreen")
+        .classList.remove("hidden");
+}
+
+
+/* =====================================================
+   NEWSLETTER
+===================================================== */
+
+function subscribeNewsletter() {
+
+    const email =
+        document.getElementById("emailInput").value;
+
+    const message =
+        document.getElementById("newsletterMessage");
+
+    if (email === "") {
+
+        message.textContent =
+            "Please enter your email.";
+
+        return;
+    }
+
+    message.textContent =
+        "Thanks for subscribing!";
+
+}
+
+
+/* =====================================================
+   POPUP
+===================================================== */
+
+/*
+    Read popup probability from URL.
+
+    Example:
+
+    ?popup_p=0.4
+
+    means approximately 40% chance.
+*/
+
+function getPopupProbability() {
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const value =
+        parseFloat(params.get("popup_p"));
+
+    if (isNaN(value)) {
+
+        return 0.15;
+
+    }
+
+    return value;
+}
+
+
+/*
+    Simple seeded random number.
+
+    This makes experiments reproducible
+    when a seed is provided in the URL.
+*/
+
+function seededRandom(seed) {
+
+    let x = Math.sin(seed++) * 10000;
+
+    return x - Math.floor(x);
+}
+
+
+/*
+    Decide whether popup should appear.
+*/
+
+function maybeShowPopup() {
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const seed =
+        parseInt(params.get("seed")) || 1;
+
+    const popupProbability =
+        getPopupProbability();
+
+    const randomValue =
+        seededRandom(seed);
+
+    if (randomValue < popupProbability) {
+
+        document.getElementById("popup")
+            .classList.remove("hidden");
+
+    }
+}
+
+
+/*
+    Close popup.
+*/
+function closePopup() {
+
+    document.getElementById("popup")
+        .classList.add("hidden");
+}
+
+
+/* =====================================================
+   ACTION DELAY
+===================================================== */
+
+/*
+    Read delay probability from URL.
+
+    Example:
+
+    ?delay_p=0.2
+*/
+
+function maybeDelay() {
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const delayProbability =
+        parseFloat(params.get("delay_p")) || 0;
+
+    const randomValue =
+        Math.random();
+
+    if (randomValue < delayProbability) {
+
+        return 1000;
+
+    }
+
+    return 0;
+}
+
+
+/* =====================================================
+   GOAL FROM URL
+===================================================== */
+
+/*
+    Example goal:
+
+    ?item=blue-mug&qty=2
+
+    This tells the environment:
+
+    Buy 2 Blue Mugs.
+*/
+
+function getGoalFromURL() {
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    return {
+
+        item: params.get("item"),
+
+        quantity:
+            parseInt(params.get("qty")) || 1
+
+    };
+
+}
+
+
+/* =====================================================
+   INITIALIZATION
+===================================================== */
+
+function initializeShop() {
+
+    const goal =
+        getGoalFromURL();
+
+    console.log("Current goal:", goal);
+
+    maybeShowPopup();
+
+}
+
+
+/*
+    Start MiniShop.
+*/
+
+initializeShop();
+
+</script>
+
+</body>
+</html>
