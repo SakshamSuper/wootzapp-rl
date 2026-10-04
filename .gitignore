@@ -1,0 +1,18 @@
+# C++ build files
+*.exe
+*.o
+*.obj
+
+# VS Code
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
